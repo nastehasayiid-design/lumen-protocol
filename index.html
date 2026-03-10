@@ -124,7 +124,6 @@
                     <div class="tile" id="role-his" onclick="setRole('History', 'Structural Analyst', 'role-his')">History</div>
                     <div class="tile" id="role-lit" onclick="setRole('Literature', 'Narrative Architect', 'role-lit')">Literature</div>
                 </div>
-                <p style="margin-top: 30px; font-size: 13px; opacity: 0.7;">Selection automatically calibrates the Verification Sandbox.</p>
             </div>
 
             <div id="view-verify" class="view">
@@ -171,12 +170,8 @@
         let currentRole = "Systemic Risk Architect";
 
         function nav(id) {
-            // Hide all views
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            // Remove active state from all links
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            
-            // Show selected view and activate link
             document.getElementById('view-' + id).classList.add('active');
             const navItem = document.getElementById('n-' + id);
             if (navItem) navItem.classList.add('active');
@@ -185,12 +180,8 @@
         function setRole(major, role, tileId) {
             currentRole = role;
             document.getElementById('final-title').innerText = role;
-            
-            // Highlight tile
             document.querySelectorAll('.tile').forEach(t => t.classList.remove('selected'));
             document.getElementById(tileId).classList.add('selected');
-            
-            // After a short delay, move them to verification to maintain the "flow"
             setTimeout(() => { nav('verify'); }, 500);
         }
 
@@ -206,7 +197,6 @@
                     audit.innerHTML += `<br>> <span style="color:var(--gold);">LOGIC MATCH: 98.4%</span>`;
                     setTimeout(() => { 
                         nav('asset'); 
-                        // Reset button for next time
                         btn.innerText = "Execute Logic Audit";
                         btn.style.opacity = "1";
                     }, 1000);
