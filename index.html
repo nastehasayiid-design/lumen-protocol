@@ -3,162 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUMEN | The Human Logic Layer</title>
+    <title>LUMEN | Human Logic Protocol</title>
     <style>
-        :root { --onyx: #1a1a1a; --ivory: #fcfcfc; --gold: #c5a059; --slate: #4a4a4a; }
+        :root { 
+            --onyx: #1a1a1a; --ivory: #fcfcfc; --gold: #c5a059; 
+            --gold-bright: #e5c17d; --slate: #4a4a4a; 
+            --heavenly-glow: rgba(197, 160, 89, 0.12); 
+        }
         
         body { 
-            font-family: 'Times New Roman', serif; 
-            background: var(--ivory); 
-            margin: 0; 
-            display: flex; 
-            height: 100vh; 
-            color: var(--onyx); 
-            overflow: hidden;
+            font-family: 'Times New Roman', serif; background: var(--ivory); 
+            margin: 0; display: flex; height: 100vh; color: var(--onyx); overflow: hidden;
         }
         
+        /* SIDEBAR - Fixed */
         .sidebar { 
-            width: 260px; 
-            background: var(--onyx); 
-            padding: 50px 30px; 
-            display: flex; 
-            flex-direction: column; 
-            color: var(--ivory); 
-            border-right: 1px solid var(--gold); 
-            z-index: 10;
+            width: 260px; background: var(--onyx); padding: 50px 30px; 
+            display: flex; flex-direction: column; color: var(--ivory); 
+            border-right: 1px solid var(--gold); z-index: 10;
         }
-
-        .logo { font-family: sans-serif; font-weight: 300; font-size: 28px; letter-spacing: 6px; margin-bottom: 80px; color: var(--gold); cursor: pointer; }
+        .logo-container { margin-bottom: 60px; cursor: pointer; }
+        .logo { 
+            font-family: sans-serif; font-weight: 300; font-size: 28px; letter-spacing: 6px; 
+            background: linear-gradient(to right, var(--gold) 20%, var(--gold-bright) 50%, var(--gold) 80%);
+            background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: shine 4s linear infinite;
+        }
+        @keyframes shine { to { background-position: 200% center; } }
         
         .nav-link { 
-            font-family: sans-serif; 
-            font-size: 11px; 
-            letter-spacing: 2px; 
-            text-transform: uppercase; 
-            margin-bottom: 30px; 
-            cursor: pointer; 
-            opacity: 0.4; 
-            transition: 0.3s;
+            font-family: sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; 
+            margin-bottom: 25px; cursor: pointer; opacity: 0.4; transition: 0.3s;
         }
+        .nav-link:hover, .nav-link.active { opacity: 1; color: var(--gold); }
         
-        .nav-link:hover { opacity: 0.8; color: var(--gold); }
-        .nav-link.active { opacity: 1; color: var(--gold); font-weight: bold; }
-        
-        .content { flex-grow: 1; display: flex; justify-content: center; align-items: center; padding: 40px; overflow-y: auto; }
-        .canvas { width: 100%; max-width: 700px; }
+        /* CONTENT AREA - Scrollable */
+        .content { 
+            flex-grow: 1; overflow-y: scroll; padding: 60px 40px; scroll-behavior: smooth;
+            background: 
+                radial-gradient(circle at 10% 10%, var(--heavenly-glow), transparent 40%),
+                radial-gradient(circle at 90% 90%, var(--heavenly-glow), transparent 40%);
+        }
+
+        .canvas { 
+            width: 100%; max-width: 900px; margin: 0 auto;
+            background: rgba(252, 252, 252, 0.8); backdrop-filter: blur(20px);
+            padding: 60px; border-radius: 2px; box-shadow: 0 10px 60px rgba(0,0,0,0.02);
+        }
         
         .view { display: none; }
-        .view.active { display: block; animation: fadeIn 0.6s ease forwards; }
-        
+        .view.active { display: block; animation: fadeIn 0.6s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        h1 { font-size: 42px; font-weight: 400; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
-        p { font-family: sans-serif; font-size: 15px; line-height: 1.8; color: var(--slate); margin-bottom: 30px; }
-        
+        h1 { font-size: 42px; font-weight: 400; margin-bottom: 30px; letter-spacing: -1px; }
+        .dashboard-metric { font-family: sans-serif; font-size: 10px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; }
+
         .action-btn { 
-            font-family: sans-serif; 
-            padding: 18px 40px; 
-            background: var(--onyx); 
-            color: white; 
-            border: 1px solid var(--onyx); 
-            text-transform: uppercase; 
-            letter-spacing: 3px; 
-            font-size: 11px; 
-            cursor: pointer; 
-            width: 100%; 
-            transition: 0.3s; 
+            font-family: sans-serif; padding: 18px 30px; background: var(--onyx); color: white; 
+            border: 1px solid var(--onyx); text-transform: uppercase; letter-spacing: 2px; 
+            font-size: 11px; cursor: pointer; transition: 0.4s; margin-top: 15px; width: 100%;
         }
-        
         .action-btn:hover { background: var(--gold); border-color: var(--gold); }
         
-        .tile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .tile { border: 1px solid #e0e0e0; padding: 25px; text-align: center; cursor: pointer; font-family: sans-serif; font-size: 11px; text-transform: uppercase; transition: 0.2s; }
+        .choice-card { 
+            border: 1px solid #ddd; padding: 40px; text-align: center; cursor: pointer; 
+            transition: 0.4s; background: white; margin-bottom: 20px;
+        }
+        .choice-card:hover { transform: translateY(-5px); border-color: var(--gold); box-shadow: 0 15px 40px var(--heavenly-glow); }
+
+        /* INTERACTIVE ELEMENTS */
+        .tile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+        .tile { 
+            border: 1px solid #eee; padding: 20px; background: white; cursor: pointer; transition: 0.2s;
+        }
         .tile:hover { border-color: var(--gold); }
-        .tile.selected { border-color: var(--gold); background: #fafafa; }
-        
-        .audit-box { background: #f4f4f4; padding: 25px; font-family: monospace; font-size: 13px; margin: 20px 0; border-left: 3px solid var(--gold); line-height: 1.5; }
-        
-        .verified-seal { border: 1px solid #eee; padding: 50px; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.02); text-align: center; }
+        .tile.selected { background: var(--onyx); color: white; border-color: var(--onyx); }
 
-        #interest-form { display: none; margin-top: 30px; border-top: 1px solid #eee; padding-top: 30px; }
-        .form-group { margin-bottom: 25px; text-align: left; }
-        .form-group label { display: block; font-family: sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
-        .form-group input { width: 100%; padding: 10px 0; background: transparent; border: none; border-bottom: 1px solid #ccc; font-family: 'Times New Roman', serif; font-size: 18px; color: var(--onyx); outline: none; }
-        .form-group input:focus { border-bottom-color: var(--gold); }
+        .scroll-feed { 
+            max-height: 400px; overflow-y: auto; border: 1px solid #eee; padding: 20px; 
+            background: #fff; margin-top: 20px; border-radius: 4px;
+        }
+        .feed-item { padding: 15px 0; border-bottom: 1px solid #f5f5f5; }
+        .feed-item:last-child { border-bottom: none; }
 
-        @media (max-width: 600px) { 
-            body { flex-direction: column; overflow-y: auto; } 
-            .sidebar { width: 100%; padding: 20px; border-right: none; border-bottom: 1px solid var(--gold); flex-direction: row; flex-wrap: wrap; justify-content: space-between; } 
-            .logo { margin-bottom: 10px; width: 100%; }
-            .nav-link { margin-bottom: 10px; font-size: 9px; } 
-            h1 { font-size: 30px; }
-            .content { padding: 20px; }
+        .audit-log { 
+            background: #111; color: #0f0; font-family: monospace; font-size: 12px; 
+            padding: 20px; height: 150px; overflow-y: auto; border-left: 3px solid var(--gold);
+        }
+
+        .progress-bar { width: 100%; background: #eee; height: 2px; margin: 20px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--gold); width: 0%; transition: 0.5s; }
+
+        input, select { 
+            width: 100%; padding: 15px 0; background: transparent; border: none; 
+            border-bottom: 1px solid #ccc; font-family: serif; font-size: 18px; outline: none; margin-bottom: 30px;
         }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <div class="logo" onclick="nav('intro')">LUMEN</div>
-        <div class="nav-link active" id="n-intro" onclick="nav('intro')">Philosophy</div>
-        <div class="nav-link" id="n-align" onclick="nav('align')">Alignment</div>
-        <div class="nav-link" id="n-verify" onclick="nav('verify')">Verification</div>
-        <div class="nav-link" id="n-asset" onclick="nav('asset')">The Asset</div>
+        <div class="logo-container" onclick="nav('gate')">
+            <div class="logo">LUMEN</div>
+            <div style="font-size: 10px; opacity: 0.6; margin-top: 5px;">Logic Verification Protocol</div>
+        </div>
+        <div class="nav-link active" id="n-gate" onclick="nav('gate')">Identity</div>
+        <div class="nav-link" id="n-onboard" onclick="nav('h-onboard')">Alignment</div>
+        <div class="nav-link" id="n-dash" onclick="nav('h-dash')">Dashboard</div>
     </div>
 
     <div class="content">
         <div class="canvas">
 
-            <div id="view-intro" class="view active">
-                <h1>The Enlightenment of AI.</h1>
-                <p>LUMEN is a high-precision vetting protocol that anchors technical systems in human logic. We curate the most sophisticated sociological minds to solve the "Context Crisis" in modern technology.</p>
-                <button class="action-btn" onclick="nav('align')">Begin Alignment Process</button>
+            <div id="view-gate" class="view active">
+                <span class="dashboard-metric">Phase 01: Identification</span>
+                <h1>Initialize Protocol.</h1>
+                <p>Welcome to LUMEN. We are bridging the Context Crisis in tech by transforming high-level humanities logic into high-precision technical assets.</p>
+                
+                <div class="choice-card" onclick="startOnboarding('humanities')">
+                    <h3>I am a Humanities Major</h3>
+                    <p style="font-family:sans-serif; font-size: 12px; opacity: 0.6;">Seeking to weaponize my sociological lens.</p>
+                </div>
+                
+                <div class="choice-card" onclick="startOnboarding('startup')">
+                    <h3>I am a Startup Founder</h3>
+                    <p style="font-family:sans-serif; font-size: 12px; opacity: 0.6;">Seeking to de-risk my team with certified architects.</p>
+                </div>
             </div>
 
-            <div id="view-align" class="view">
-                <h1>Discipline Alignment</h1>
-                <p>Select the academic root of the candidate to visualize their integration into technical infrastructure.</p>
+            <div id="view-h-onboard" class="view">
+                <span class="dashboard-metric">Phase 02: Alignment</span>
+                <h1>Tell us your story.</h1>
+                <input type="text" id="h-name" placeholder="Full Name">
+                <input type="text" id="h-major" placeholder="Major (e.g., Sociology, UC Berkeley)">
+                
+                <p style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--gold);">Select Your 4 Primary Value Metrics</p>
                 <div class="tile-grid">
-                    <div class="tile" id="role-soc" onclick="setRole('Sociology', 'Systemic Risk Architect', 'role-soc')">Sociology</div>
-                    <div class="tile" id="role-phi" onclick="setRole('Philosophy', 'Ethical Logic Lead', 'role-phi')">Philosophy</div>
-                    <div class="tile" id="role-his" onclick="setRole('History', 'Structural Analyst', 'role-his')">History</div>
-                    <div class="tile" id="role-lit" onclick="setRole('Literature', 'Narrative Architect', 'role-lit')">Literature</div>
+                    <div class="tile" onclick="this.classList.toggle('selected')">Structural Empathy</div>
+                    <div class="tile" onclick="this.classList.toggle('selected')">Systemic Risk Oversight</div>
+                    <div class="tile" onclick="this.classList.toggle('selected')">Narrative Architecture</div>
+                    <div class="tile" onclick="this.classList.toggle('selected')">Behavioral Auditing</div>
                 </div>
+                <button class="action-btn" onclick="runTrace()">Begin Vetting & Trace</button>
             </div>
 
-            <div id="view-verify" class="view">
-                <h1>Verification Sandbox</h1>
-                <p>Our proprietary "Dialogue Trace" de-risks human assets by measuring logical resilience against systemic stressors.</p>
-                <div class="audit-box" id="audit-text">
-                    > Initializing LUMEN Trace...<br>
-                    > Root: UC BERKELEY SOCIOLOGY<br>
-                    > Target Asset: N. KHALID
+            <div id="view-trace" class="view">
+                <span class="dashboard-metric">Phase 03: Verification</span>
+                <h1>Performing Trace...</h1>
+                <div class="audit-log" id="log-output">
+                    > Initializing Sociological Audit...<br>
+                    > Scanning Resume for Contextual Alpha...
                 </div>
-                <button class="action-btn" id="audit-btn" onclick="runAudit()">Execute Logic Audit</button>
+                <div class="progress-bar"><div class="progress-fill" id="p-fill"></div></div>
             </div>
 
-            <div id="view-asset" class="view">
-                <div class="verified-seal">
-                    <label style="letter-spacing: 3px; font-size: 10px; color: var(--gold); font-family: sans-serif;">CERTIFIED LOGIC ARCHITECT</label>
-                    <h2 style="font-weight: 400; font-size: 36px; margin: 15px 0;">Nastayo Khalid</h2>
-                    <p id="final-title" style="font-style: italic; margin-bottom: 25px;">Systemic Risk Architect</p>
-                    <div style="border-top: 1px solid #eee; padding: 25px 0; margin-bottom: 10px;">
-                        <div style="font-size: 34px; font-weight: 400;">$20,000</div>
-                        <p style="font-size: 10px; margin-top: 5px; opacity: 0.6; font-family: sans-serif;">ONE-TIME PLACEMENT FEE</p>
+            <div id="view-h-dash" class="view">
+                <span class="dashboard-metric">Architect Command Center</span>
+                <h1 id="dash-name">Dashboard</h1>
+                
+                <div style="display: flex; gap: 20px;">
+                    <div style="flex: 1; border: 1px solid #eee; padding: 20px; text-align: center;">
+                        <div class="dashboard-metric">Logic Match</div>
+                        <div style="font-size: 32px; color: var(--gold);">98.4%</div>
                     </div>
+                    <div style="flex: 1; border: 1px solid #eee; padding: 20px; text-align: center;">
+                        <div class="dashboard-metric">Market Value</div>
+                        <div style="font-size: 32px;">$20k</div>
+                    </div>
+                </div>
 
-                    <button class="action-btn" id="reveal-btn" onclick="showForm()">Process Placement</button>
+                <div class="scroll-feed">
+                    <div class="dashboard-metric" style="margin-bottom: 15px;">Live Partner Matches</div>
+                    <div class="feed-item">
+                        <b>Imagine AI (YC F25)</b><br>
+                        <span style="font-size: 11px; opacity: 0.6;">Targeting: Systemic Risk Architect | Location: SF</span>
+                        <button class="action-btn" style="padding: 10px; font-size: 9px;">Review Mission</button>
+                    </div>
+                    <div class="feed-item">
+                        <b>Constellation Robotics</b><br>
+                        <span style="font-size: 11px; opacity: 0.6;">Targeting: Behavioral Lead | Location: Remote</span>
+                        <button class="action-btn" style="padding: 10px; font-size: 9px;">Request Intro</button>
+                    </div>
+                </div>
+            </div>
 
-                    <div id="interest-form">
-                        <div class="form-group">
-                            <label>Principal Name</label>
-                            <input type="text" id="client-name" placeholder="Name">
+            <div id="view-s-dash" class="view">
+                <span class="dashboard-metric">Partner Portal</span>
+                <h1>Certified Assets.</h1>
+                <p>Scroll to browse verified architects ready for deployment.</p>
+                
+                <div class="scroll-feed" style="max-height: 500px;">
+                    <div class="feed-item" style="padding: 30px; border: 1px solid var(--gold);">
+                        <div style="display: flex; justify-content: space-between;">
+                            <div>
+                                <b style="font-size: 20px;">Nastayo Khalid</b><br>
+                                <span class="dashboard-metric">Systemic Risk Architect</span>
+                            </div>
+                            <div style="text-align: right; color: var(--gold);">98.4% Match</div>
                         </div>
-                        <div class="form-group">
-                            <label>Organization / Venture</label>
-                            <input type="text" id="client-org" placeholder="Company">
+                        <p style="font-size: 12px; margin: 15px 0;">Expertise in mapping sociological friction to technical guardrails. Essential for high-stakes AI scaling.</p>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="action-btn" style="flex:1">Trial ($2k/mo)</button>
+                            <button class="action-btn" style="flex:1; background: var(--gold); border-color: var(--gold);">Acquire ($20k)</button>
                         </div>
-                        <button class="action-btn" style="background: var(--gold); border-color: var(--gold);" onclick="submitPlacement()">Confirm Request</button>
+                    </div>
+                    <br>
+                    <div class="feed-item" style="padding: 30px; border: 1px solid #eee; opacity: 0.6;">
+                        <b style="font-size: 20px;">J. Aris</b><br>
+                        <span class="dashboard-metric">Narrative Infrastructure</span>
+                        <p style="font-size: 12px; margin: 15px 0;">Vetting in progress (82%)...</p>
                     </div>
                 </div>
             </div>
@@ -167,54 +220,43 @@
     </div>
 
     <script>
-        let currentRole = "Systemic Risk Architect";
-
         function nav(id) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.getElementById('view-' + id).classList.add('active');
-            const navItem = document.getElementById('n-' + id);
-            if (navItem) navItem.classList.add('active');
-        }
-
-        function setRole(major, role, tileId) {
-            currentRole = role;
-            document.getElementById('final-title').innerText = role;
-            document.querySelectorAll('.tile').forEach(t => t.classList.remove('selected'));
-            document.getElementById(tileId).classList.add('selected');
-            setTimeout(() => { nav('verify'); }, 500);
-        }
-
-        function runAudit() {
-            const audit = document.getElementById('audit-text');
-            const btn = document.getElementById('audit-btn');
-            btn.innerText = "Analyzing...";
-            btn.style.opacity = "0.5";
+            const targetView = document.getElementById('view-' + id);
+            if (targetView) targetView.classList.add('active');
             
-            setTimeout(() => {
-                audit.innerHTML += `<br>> Analyzing resilience...`;
-                setTimeout(() => {
-                    audit.innerHTML += `<br>> <span style="color:var(--gold);">LOGIC MATCH: 98.4%</span>`;
-                    setTimeout(() => { 
-                        nav('asset'); 
-                        btn.innerText = "Execute Logic Audit";
-                        btn.style.opacity = "1";
-                    }, 1000);
-                }, 800);
-            }, 800);
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            if(id === 'gate') document.getElementById('n-gate').classList.add('active');
+            if(id === 'h-onboard') document.getElementById('n-onboard').classList.add('active');
+            if(id.includes('dash')) document.getElementById('n-dash').classList.add('active');
         }
 
-        function showForm() {
-            document.getElementById('reveal-btn').style.display = 'none';
-            document.getElementById('interest-form').style.display = 'block';
+        function startOnboarding(type) {
+            if(type === 'humanities') nav('h-onboard');
+            else nav('s-dash'); 
         }
 
-        function submitPlacement() {
-            const name = document.getElementById('client-name').value || "A Partner";
-            const org = document.getElementById('client-org').value || "Undisclosed Venture";
-            const subject = "LUMEN Placement Request";
-            const body = `Inquiry regarding ${currentRole} placement.\n\nPrincipal: ${name}\nOrganization: ${org}`;
-            window.location.href = `mailto:nastayokhalid@icloud.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        function runTrace() {
+            const name = document.getElementById('h-name').value;
+            if(name) document.getElementById('dash-name').innerText = name + "'s Control";
+            
+            nav('trace');
+            let fill = document.getElementById('p-fill');
+            let log = document.getElementById('log-output');
+            let width = 0;
+            
+            let interval = setInterval(() => {
+                width += 1.5;
+                fill.style.width = width + '%';
+                if(width > 30 && width < 32) log.innerHTML += "<br>> Cross-referencing Sociology vs. Risk...";
+                if(width > 60 && width < 62) log.innerHTML += "<br>> Authenticating academic pedigree...";
+                if(width > 90 && width < 92) log.innerHTML += "<br>> <span style='color:var(--gold)'>VETTING SUCCESSFUL.</span>";
+                
+                if (width >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => nav('h-dash'), 500);
+                }
+            }, 50);
         }
     </script>
 </body>
