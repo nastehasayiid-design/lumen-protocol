@@ -1,39 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUMEN | Human Logic Protocol</title>
-    <style>
-        :root { 
-            --onyx: #1a1a1a; --ivory: #fcfcfc; --gold: #c5a059; 
-            --gold-bright: #e5c17d; --heavenly-glow: rgba(197, 160, 89, 0.12); 
-        }
-        
-        body { 
-            font-family: 'Times New Roman', serif; background: var(--ivory); 
-            margin: 0; display: flex; height: 100vh; color: var(--onyx); overflow: hidden;
-        }
-        
-        /* SIDEBAR NAVIGATION */
-        .sidebar { 
-            width: 260px; background: var(--onyx); padding: 50px 30px; 
-            display: flex; flex-direction: column; color: var(--ivory); 
-            border-right: 1px solid var(--gold); z-index: 10;
-        }
-        .logo-container { margin-bottom: 60px; cursor: pointer; }
-        .logo { 
-            font-family: sans-serif; font-weight: 300; font-size: 28px; letter-spacing: 6px; 
-            background: linear-gradient(to right, var(--gold) 20%, var(--gold-bright) 50%, var(--gold) 80%);
-            background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: shine 4s linear infinite;
-        }
-        @keyframes shine { to { background-position: 200% center; } }
-        
-        .nav-link { 
-            font-family: sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; 
-            margin-bottom: 25px; cursor: pointer; opacity: 0.4; transition: 0.3s;
-        }
+<style>
+/* 1. REQUIRED VARIABLES - Fixes the "Crash" */
+:root {
+  --gold: #c5a059;
+  --onyx: #1a1a1a;
+  --heavenly-glow: rgba(230, 230, 250, 0.3);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; display: flex; height: 100vh; background: #fafafa; color: var(--onyx); }
+
+/* SIDEBAR STYLES */
+.sidebar { width: 280px; padding: 40px; border-right: 1px solid #eee; display: flex; flex-direction: column; }
+.logo { font-weight: 700; letter-spacing: 5px; margin-bottom: 10px; }
+.protocol { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #999; margin-bottom: 50px; }
+.nav-link { 
+  display: block; text-decoration: none; color: var(--onyx); 
+  opacity: 0.5; font-size: 12px; margin: 15px 0; transition: 0.3s; 
+}
+
+/* YOUR EXISTING CODE START */
+.nav-link:hover, .nav-link.active { opacity: 1; color: var(--gold); } 
+
+.content { flex-grow: 1; overflow-y: scroll; padding: 60px 40px; scroll-behavior: smooth; background: radial-gradient(circle at 10% 10%, var(--heavenly-glow), transparent 40%); } 
+
+.canvas { width: 100%; max-width: 900px; margin: 0 auto; background: rgba(252, 252, 252, 0.8); backdrop-filter: blur(20px); padding: 60px; border-radius: 2px; box-shadow: 0 10px 60px rgba(0,0,0,0.02); position: relative; min-height: 85vh; } 
+
+.art-hero { width: 100%; height: 200px; background: var(--onyx); margin-bottom: 30px; position: relative; overflow: hidden; border: 1px solid var(--gold); display: flex; align-items: center; justify-content: center; } 
+
+.geometric-line { position: absolute; border: 1px solid rgba(197, 160, 89, 0.3); animation: pulseArt 8s infinite ease-in-out; width: 100px; height: 100px; } 
+
+@keyframes pulseArt { 0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.2; } 50% { transform: scale(1.5) rotate(45deg); opacity: 0.6; } } 
+
+.view { display: none; } 
+.view.active { display: block; animation: fadeIn 0.4s ease-out; } 
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } } 
+
+h1 { font-size: 42px; font-weight: 400; margin-bottom: 20px; letter-spacing: -1px; } 
+
+.dashboard-metric { font-family: sans-serif; font-size: 10px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; } 
+
+.action-btn { font-family: sans-serif; padding: 18px 30px; background: var(--onyx); color: white; border: 1px solid var(--onyx); text-transform: uppercase; letter-spacing: 2px; font-size: 11px; cursor: pointer; transition: 0.4s; margin-top: 15px; width: 100%; } 
+.action-btn:hover { background: var(--gold); border-color: var(--gold); } 
+
+.tile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 25px 0; } 
+.tile { border: 1px solid #eee; padding: 25px; background: white; cursor: pointer; transition: 0.2s; font-size: 12px; line-height: 1.4; } 
+.tile.selected { border-color: var(--gold); background: var(--onyx); color: white; } 
+
+input[type="text"] { width: 100%; padding: 15px 0; background: transparent; border: none; border-bottom: 1px solid #ccc; font-size: 18px; outline: none; margin-bottom: 20px; }
+/* YOUR EXISTING CODE END */
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">LUMEN</div>
+  <div class="protocol">Human Logic Protocol</div>
+  <a href="#" class="nav-link active" onclick="showView('v1')">01 IDENTITY</a>
+  <a href="#" class="nav-link" onclick="showView('v2')">02 VALUES</a>
+  <a href="#" class="nav-link" onclick="showView('v3')">03 INTELLIGENCE</a>
+  <a href="#" class="nav-link" onclick="showView('v4')">04 DASHBOARD</a>
+</div>
+
+<div class="content">
+  <div class="canvas">
+    <!-- View 01 -->
+    <div id="v1" class="view active">
+      <div class="art-hero">
+        <div class="geometric-line"></div>
+      </div>
+      <div class="dashboard-metric">System Protocol Alpha</div>
+      <h1>Identity Interface</h1>
+      <input type="text" placeholder="Enter identification signature...">
+      <div class="tile-grid">
+        <div class="tile selected">Primary Authentication</div>
+        <div class="tile">Biometric Override</div>
+      </div>
+      <button class="action-btn">Initialize Sync</button>
+    </div>
+
+    <!-- View 02 placeholder -->
+    <div id="v2" class="view">
+      <h1>Core Values</h1>
+      <p>Logic integrity established.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+</script>
+
+</body>
+</html>
         .nav-link:hover, .nav-link.active { opacity: 1; color: var(--gold); }
         
         /* CONTENT CANVAS */
